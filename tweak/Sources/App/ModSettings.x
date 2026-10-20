@@ -3,7 +3,7 @@
 // app looks like (Redesigned UI's switch, Appearance, Tab bar), the screens a page of its own changes
 // (Home & Library in the native look, Player, Lyrics, and Albums and Artists in the redesign), the features
 // that work under either look (Sing, Spatial voice, Audio effects, AutoMix, Live Activity, AirPods gestures, Listening
-// stats), the system's side (Lock screen, Vibrations; Premium, ads & privacy), the advanced pages (Labs, All flags, a
+// stats), the system's side (Lock screen, Vibrations, Privacy), the advanced pages (Labs, All flags, a
 // searchable list of every flag with an override per flag) and Mod, the build, its updates and links. The
 // same row leads the side drawer's list (trees/test6.txt), above Your plan, so the page is a tap from
 // Home, and holding Home on the tab bar opens it too. The tweaks read the switches when they run, so a
@@ -20,7 +20,6 @@
 #import "Settings/SGModPage.h"
 #import "Native/Home/Home.h"
 #import "Redesigned/Home/Home.h"
-#import "Shared/AdBlock/AdBlock.h"
 #import "Shared/Flags/Flags.h"
 #import "Shared/AudioEffects/AudioEffectsPage.h"
 #import "Shared/AutoMix/AutoMix.h"
@@ -30,6 +29,7 @@
 #import "Shared/Player/PlayerSettings.h"
 #import "Shared/Sing/Sing.h"
 #import "Shared/Haptics/Haptics.h"
+#import "Shared/Privacy/Privacy.h"
 #import "App/About/About.h"
 #import "App/Onboarding/Onboarding.h"
 #import "Redesigned/Album/Album.h"
@@ -115,7 +115,7 @@ static UIViewController *modSettingsPage(void) {
             pageRow(@"Lock screen", @"lock.iphone", SGColorRGB(0x32ADE6), ^UIViewController *{ return SGLockScreenWidgetPage(); }),
             // Vibrations hook Spotify's own controls and its audio, so they answer under either look.
             pageRow(@"Vibrations", @"waveform", UIColor.systemGreenColor, ^UIViewController *{ return SGVibrationsSettingsPage(); }),
-            pageRow(@"Premium, ads & privacy", @"hand.raised.fill", UIColor.systemBlueColor, ^UIViewController *{ return SGAdsSettingsPage(); }),
+            pageRow(@"Privacy", @"hand.raised.fill", UIColor.systemBlueColor, ^UIViewController *{ return SGPrivacySettingsPage(); }),
         ]),
         SGSection(nil, @[
             pageRow(@"Labs", @"testtube.2", UIColor.systemGreenColor, ^UIViewController *{ return SGLabsPage(); }),

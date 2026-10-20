@@ -38,7 +38,7 @@ void SGAutoMixReconcile(void);
 SGAutoMixStyle SGAutoMixCurrentStyle(void);
 void SGAutoMixSetStyle(SGAutoMixStyle style);
 void SGAutoMixSetSeconds(NSInteger seconds);
-// YES on a Premium account, or a Free one under Spoof Premium; YES too before the product state is known.
+// YES on a Premium account; YES too before the product state is known.
 BOOL SGAutoMixAccountAllows(void);
 
 UIViewController *SGAutoMixSettingsPage(void);

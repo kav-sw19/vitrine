@@ -1,8 +1,7 @@
 // Onboarding: a welcome page over Home the first time this build runs, in glass: Vitrine's logo landing,
-// then a pick between the redesign (offered first on iOS 26) and Spotify's own look, a No ads switch that
-// turns Hide ads, Hide upsells and Spoof Premium on together (off leaves them alone), pointers to what people
+// then a pick between the redesign (offered first on iOS 26) and Spotify's own look, pointers to what people
 // miss in Mod Settings (Split Tabs, Lyrics, AirPods gestures and the Live Activity), and a line on holding
-// Home for Mod Settings. The look and those switches are read at launch, so a changed pick ends the
+// Home for Mod Settings. The look is read at launch, so a changed pick ends the
 // welcome in a restart. After an update instead, a What's new sheet lists what the version brought. The Mod page
 // offers both again.
 #import <UIKit/UIKit.h>

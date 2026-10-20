@@ -2,7 +2,6 @@
 #import <OSLog/OSLog.h>
 #import <sys/utsname.h>
 #import "Core/SGCore.h"
-#import "Shared/AdBlock/AdBlock.h"
 #import "Shared/Lyrics/Lyrics.h"
 #import "Settings/SGPageStyle.h"
 #import "About.h"
@@ -59,15 +58,8 @@ void SGShareDiagnostics(void) {
     [text appendFormat:@"Vitrine %s, Spotify %@, iOS %@, %s\n", SG_VERSION,
         [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"] ?: @"unknown",
         UIDevice.currentDevice.systemVersion, machine.machine];
-    [text appendFormat:@"look %@, hide ads %d, hide upsells %d, spoof premium %d, EeveeSpotify %d\n\n",
-        SGRedesignedUIStored() ? @"redesign" : @"native", SGHidden(SGKeyHideAds), SGHidden(SGKeyHideUpsells),
-        SGHidden(SGKeyFakePremium), SGEeveeSpotifyInjected()];
-    [text appendString:@"== ads blocked (stopped of checked)\n"];
-    for (NSString *label in SGAdBlockLabels()) {
-        NSUInteger checked = SGAdBlockChecked(label);
-        [text appendFormat:@"%@: %lu%@\n", label, (unsigned long)SGAdBlockCount(label),
-            checked == NSNotFound ? @"" : [NSString stringWithFormat:@" of %lu", (unsigned long)checked]];
-    }
+    [text appendFormat:@"look %@, EeveeSpotify %d\n\n",
+        SGRedesignedUIStored() ? @"redesign" : @"native", SGEeveeSpotifyInjected()];
     // This launch's lines, from the system log: release builds keep none of their own.
     [text appendString:@"\n== log, this launch\n"];
     NSError *error;
@@ -86,7 +78,7 @@ void SGShareDiagnostics(void) {
     NSURL *caches = [NSFileManager.defaultManager URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask].firstObject;
     NSString *config = [NSString stringWithContentsOfURL:[caches URLByAppendingPathComponent:@"Vitrine/live-config.txt"]
                                                 encoding:NSUTF8StringEncoding error:nil];
-    [text appendFormat:@"\n\n== config Spotify's server last sent\n%@", config ?: @"(none yet: Spoof Premium is off, or no fetch so far)\n"];
+    [text appendFormat:@"\n\n== config Spotify's server last sent\n%@", config ?: @"(none yet: no fetch so far)\n"];
 
     NSURL *url = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:@"vitrine-diagnostics.txt"]];
     [text writeToURL:url atomically:YES encoding:NSUTF8StringEncoding error:nil];

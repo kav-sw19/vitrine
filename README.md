@@ -44,6 +44,17 @@ The redesign is `UIGlassEffect`, which only exists from iOS 26. Below that the R
 turns it on only after a warning that it is untested there, and a launch with it that hangs goes back
 to Spotify's own screens with everything else the mod adds on top. Both live in Settings → Mod Settings.
 
+## This fork: glass only
+
+This branch removes Vitrine's ad blocking, upsell hiding and Premium spoofing — everything under
+`tweak/Sources/Shared/AdBlock/` except the shared protobuf walker that lyrics, motion and haptics read
+through — from the build and from Mod Settings. What is left is the redesign, the Live Activity, the
+lyrics work, AutoMix, audio effects, Sing and the rest of the look. The Privacy page keeps its own
+Home row (telemetry blocking and clean shared links) now that the page that held it is gone.
+
+It is meant for an account that already pays for Premium, signed for personal use. It is not a way to
+get Premium features without Premium.
+
 ## Build it
 
 No IPA is distributed. Bring a decrypted **Spotify 9.1.78**, **9.1.88** or **9.1.90** IPA; you get an unsigned

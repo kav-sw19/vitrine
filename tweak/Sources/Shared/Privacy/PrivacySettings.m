@@ -21,3 +21,8 @@ SGModSection *SGPrivacyCountersSection(void) {
     [counts addObject:SGActionRow(@"Reset the telemetry counters", nil, ^{ SGResetBlocked(); })];
     return SGSection(@"Telemetry blocked so far", counts);
 }
+
+UIViewController *SGPrivacySettingsPage(void) {
+    return [[SGModPage alloc] initWithTitle:@"Privacy" intro:nil
+                                   sections:@[SGPrivacySection(), SGPrivacyCountersSection()] footer:nil];
+}

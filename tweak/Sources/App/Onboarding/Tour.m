@@ -3,7 +3,6 @@
 #import "Onboarding.h"
 #import "App/About/About.h"
 #import "App/Pages.h"
-#import "Shared/AdBlock/AdBlock.h"
 
 static const CGFloat kMargin = 24;
 static const CGFloat kCardRadius = 22;
@@ -328,20 +327,9 @@ static UIStackView *noteLine(UIImageView *icon, UILabel *text) {
     return line;
 }
 
-// The three switches at the top of the Premium, ads & privacy page, which the No ads card sets together.
-static NSArray<NSString *> *adKeys(void) {
-    return @[SGKeyHideAds, SGKeyHideUpsells, SGKeyFakePremium];
-}
-
-static BOOL adFree(void) {
-    for (NSString *key in adKeys()) if (!SGHidden(key)) return NO;
-    return YES;
-}
-
 @implementation SGOnboardingController {
     SGTourLogo *_logo;
-    SGLookCard *_redesigned, *_legacy, *_adsCard;
-    UISwitch *_ads;
+    SGLookCard *_redesigned, *_legacy;
     UIStackView *_column;
     UIView *_splitTip;   // the redesign's; the lyrics tip's line changes with the look too
     UILabel *_lyricsTip;
@@ -402,8 +390,8 @@ static BOOL adFree(void) {
     }
     _report.hidden = !untested || !SGRepoURL;
     _note.hidden = _redesigned.selected && !untested;
-    // The ads card stands apart from the look's cards and its note, whichever of those comes last.
-    [_column setCustomSpacing:_note.hidden ? 32 : 12 afterView:_legacy];
+    // The tips that follow stand apart from the look's cards and their note.
+    [_column setCustomSpacing:32 afterView:_legacy];
     // The tips of the picked look: Split Tabs is the redesign's bar's, and the lyrics preview the redesign's page's.
     _splitTip.hidden = !_redesigned.selected;
     _lyricsTip.text = [(_redesigned.selected ? @"A live preview of the look, the sources in order, and lyrics even where Spotify has none."
@@ -458,43 +446,19 @@ static BOOL adFree(void) {
     _legacy.selected = !redesigned;
     _note = [self noteView];
 
-    // Spotify without its ads: one switch for Hide ads, Hide upsells and Spoof Premium. Off leaves each as it
-    // is; the tour again shows on only while all three are. They are read at launch, so on ends in a restart.
-    _ads = [UISwitch new];
-    _ads.onTintColor = SGGreen();
-    _ads.on = adFree();
-    _adsCard = [[SGLookCard alloc] initWithSymbol:@"speaker.slash" title:@"No ads"
-                                         subtitle:@"No ads, no Premium upsells, and Premium spoofed." accessory:_ads];
-    [_adsCard addTarget:self action:@selector(toggleAds) forControlEvents:UIControlEventTouchUpInside];
-    _adsCard.isAccessibilityElement = YES;
-    _adsCard.accessibilityLabel = @"No ads";
-    _adsCard.accessibilityHint = @"No ads, no Premium upsells, and Premium spoofed.";
-    _adsCard.accessibilityValue = _ads.on ? @"On" : @"Off";
-    if (@available(iOS 17.0, *)) _adsCard.accessibilityTraits = UIAccessibilityTraitToggleButton;
-    else _adsCard.accessibilityTraits = UIAccessibilityTraitButton;
-    UILabel *adsText = [UILabel new];
-    adsText.text = @"Three switches of Premium, ads & privacy, applied at the restart; off leaves each as it is. Spoof Premium is "
-                   @"untested and can end in a forced logout; a Premium account gains nothing from it. Offline, audio quality and "
-                   @"sessions stay the server's.";
-    UIStackView *adsNote = noteLine(SGSymbolView(@"info.circle.fill", 15, UIImageSymbolWeightSemibold, 22), adsText);
-    adsNote.arrangedSubviews.firstObject.tintColor = SGGrey();
-    adsNote.layoutMargins = UIEdgeInsetsMake(4, 4, 0, 4);
-    adsNote.layoutMarginsRelativeArrangement = YES;
-
     UILabel *tipsHeading = [UILabel new];
     tipsHeading.text = @"Easy to miss";
     tipsHeading.font = [UIFont systemFontOfSize:17 weight:UIFontWeightSemibold];
     tipsHeading.textColor = UIColor.whiteColor;
     UIView *tips = [self tipsView];
 
-    _column = [[UIStackView alloc] initWithArrangedSubviews:@[strip, heading, _redesigned, _legacy, _note, _adsCard, adsNote, tipsHeading, tips]];
+    _column = [[UIStackView alloc] initWithArrangedSubviews:@[strip, heading, _redesigned, _legacy, _note, tipsHeading, tips]];
     UIStackView *column = _column;
     column.axis = UILayoutConstraintAxisVertical;
     column.spacing = 12;
     [column setCustomSpacing:28 afterView:strip];
     [column setCustomSpacing:24 afterView:heading];
     [column setCustomSpacing:32 afterView:_note];
-    [column setCustomSpacing:32 afterView:adsNote];
     column.translatesAutoresizingMaskIntoConstraints = NO;
     [self updateNote];
 
@@ -543,7 +507,7 @@ static BOOL adFree(void) {
     [self refresh];
 
     // The tour opens on the logo alone; the page waits under it until the reeds land.
-    _page = @[heading, _redesigned, _legacy, _note, _adsCard, adsNote, tipsHeading, tips, _primary, footer];
+    _page = @[heading, _redesigned, _legacy, _note, tipsHeading, tips, _primary, footer];
     [_logo prepare];
     BOOL reduce = UIAccessibilityIsReduceMotionEnabled();
     for (UIView *view in _page) {
@@ -581,16 +545,9 @@ static BOOL adFree(void) {
     [self refresh];
 }
 
-- (void)toggleAds {
-    [_ads setOn:!_ads.on animated:YES];
-    _adsCard.accessibilityValue = _ads.on ? @"On" : @"Off";
-    [self refresh];
-}
-
-// The look and the ad switches are read at launch, so a choice that differs from the running one ends the
-// tour in a restart.
+// The look is read at launch, so a choice that differs from the running one ends the tour in a restart.
 - (BOOL)needsRestart {
-    return _redesigned.selected != SGRedesignedUI() || (_ads.on && !adFree());
+    return _redesigned.selected != SGRedesignedUI();
 }
 
 - (void)refresh {
@@ -605,7 +562,6 @@ static BOOL adFree(void) {
 - (void)finish {
     SGSetEnabled(SGKeyOnboardingSeen, YES);
     SGSetRedesignedUI(_redesigned.selected);
-    if (_ads.on) for (NSString *key in adKeys()) SGSetEnabled(key, YES);
     if (self.needsRestart) {
         SGRestartSpotify();
         return;

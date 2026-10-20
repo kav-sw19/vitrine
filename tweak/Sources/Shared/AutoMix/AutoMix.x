@@ -1,7 +1,6 @@
 // AutoMix's side of Spotify: its settings, through the preferences object Shared/SpotifyPrefs captures, its product
 // state, captured as Spotify makes it, and the probe.
 #import "Core/SGCore.h"
-#import "Shared/AdBlock/AdBlock.h"
 #import "Shared/Player/PlayerState.h"
 #import "Shared/SpotifyPrefs/SpotifyPrefs.h"
 #import "AutoMix.h"
@@ -31,7 +30,7 @@ BOOL SGTransitionSettingsRead(SGTransitionSettings *settings) {
 BOOL SGTransitionSettingsWrite(SGTransitionSettings settings) {
     SPTPreferences *preferences = SGSpotifyPreferences();
     if (!preferences) return NO;
-    // The time first: under Spoof Premium Crossfade.x turns crossfade on or off with it.
+    // The time first.
     preferences.audioCrossfadeTime = settings.milliseconds;
     preferences.audioCrossfade = settings.crossfade;
     preferences.audioAutomix = settings.automix;
@@ -112,7 +111,6 @@ void SGAutoMixSetSeconds(NSInteger seconds) {
 }
 
 BOOL SGAutoMixAccountAllows(void) {
-    if (SGHidden(SGKeyFakePremium)) return YES;
     NSString *type = [sg_productState stringForKey:@"type"];
     return !type || [type isEqualToString:@"premium"];
 }

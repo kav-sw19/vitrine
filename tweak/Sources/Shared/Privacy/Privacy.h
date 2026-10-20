@@ -22,7 +22,8 @@ NSUInteger SGBlockedCount(NSString *label);
 void SGResetBlocked(void);
 
 @class SGModSection;
-// The telemetry and shared links switches and what the telemetry blocking has stopped, on the
-// Premium, ads & privacy page.
+// The telemetry and shared links switches, and what the telemetry blocking has stopped, on the Privacy page.
 SGModSection *SGPrivacySection(void);
 SGModSection *SGPrivacyCountersSection(void);
+// The Privacy page: both sections above.
+UIViewController *SGPrivacySettingsPage(void);
